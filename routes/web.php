@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +35,18 @@ Route::get('/migrate', function () {
       '--force' => true,
   ]);
   dd('migrated!');
+});
+
+Route::get('/send_notif', function(){
+    $user = User::get();
+
+    foreach($user as $u){
+        Notification::make()
+            ->title('Notifikasi dari route')
+            ->sendToDatabase($u);
+    }
+
+    dd('Notif terkirim');
 });
 
 // Route::get('login', function(){

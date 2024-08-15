@@ -8,6 +8,7 @@ use App\Filament\Resources\RunningTimeResource\RelationManagers\TransaksiProdukR
 use App\Models\Meja;
 use App\Models\RunningTime;
 use App\Models\Transaksi;
+use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DateTimePicker;
@@ -18,6 +19,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
@@ -29,6 +31,7 @@ use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class RunningTimeResource extends Resource
 {
@@ -157,9 +160,10 @@ class RunningTimeResource extends Resource
                     ->dateTime()
                     ->label('Mulai')
                     ->sortable(),
-                // TextColumn::make('waktu_selesai')
-                //     ->dateTime()
-                //     ->sortable(),
+                TextColumn::make('waktu_selesai')
+                    ->dateTime()
+                    ->label('Selesai')
+                    ->sortable(),
                 TextColumn::make('waktu_running')
                     ->label('Lama')
                     ->formatStateUsing(function ($state) {
