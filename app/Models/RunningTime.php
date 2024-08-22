@@ -20,7 +20,9 @@ class RunningTime extends Model
         'id_member',
         'waktu_running',
         'harga_per_jam',
-        'status_pembayaran'
+        'status_pembayaran',
+        'paket',
+        'shift',
     ];
 
     public function user()
@@ -39,7 +41,8 @@ class RunningTime extends Model
     }
 
     public function total(){
-        $hargaPerMenit = config('app.harga_per_jam') / 60;
+        $hargaPerMenit = $this->harga_per_jam / 60;
+        // dd($this->waktu_running);
         $hargaMain = $this->waktu_running * $hargaPerMenit;
 
         $hargaBelanja = TransaksiProduk::where('id_running_time', $this->id)->sum('sub_total');

@@ -112,7 +112,7 @@ return [
 
     'faker_locale' => 'id_ID',
 
-    'harga_per_jam' => env('HARGA_PER_JAM', 30000),
+    'harga_per_jam' => env('HARGA_PER_JAM', 35000),
 
     /*
     |--------------------------------------------------------------------------

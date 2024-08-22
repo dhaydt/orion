@@ -5,11 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RunningTimeResource\Pages;
 use App\Filament\Resources\RunningTimeResource\Pages\ViewRunningTime;
 use App\Filament\Resources\RunningTimeResource\RelationManagers\TransaksiProdukRelationManager;
+use App\Models\Config;
 use App\Models\Meja;
 use App\Models\RunningTime;
 use App\Models\Transaksi;
 use App\Models\User;
 use Carbon\Carbon;
+use Closure;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
@@ -19,6 +21,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
@@ -48,6 +51,30 @@ class RunningTimeResource extends Resource
     {
         return $form
             ->schema([
+                Select::make('paket')
+                    ->label('Tipe Paket')
+                    ->required()
+                    ->reactive()
+                    ->placeholder('Pilih paket atau personal')
+                    // ->afterStateUpdated(
+                    //     fn ($state, callable $set) => dd($state)
+                    // )
+                    ->options([
+                        'personal' => 'Personal',
+                        '1' => 'Paket 1 Jam',
+                        '2' => 'Paket 2 Jam',
+                        '3' => 'Paket 3 Jam',
+                        '4' => 'Paket 4 Jam',
+                    ]),
+                Select::make('shift')
+                    ->label('Shift')
+                    ->required()
+                    ->reactive()
+                    ->placeholder('Pilih Shift Harga')
+                    ->options(Config::get()->pluck('name', 'name'))
+                    ->afterStateUpdated(
+                        fn ($state, callable $set) => $state == 'Shift Siang' ? $set('harga_per_jam', 25000) : $set('harga_per_jam', 35000)
+                    ),
                 Grid::make([
                     'default' => 1,
                     'sm' => 2,
@@ -66,6 +93,10 @@ class RunningTimeResource extends Resource
                                     ->string()
                                     ->helperText('Di isi ketika waktu mulai sudah di tentukan'),
                             ])
+                            ->reactive()
+                            ->hidden(
+                                fn (Get $get): bool => ($get('paket') == 'personal' || $get('paket') == null) ? false : true
+                            )
                             ->columnSpan(2),
                         Fieldset::make('Waktu Selesai')
                             ->schema([
@@ -78,21 +109,24 @@ class RunningTimeResource extends Resource
                                     ->string()
                                     ->helperText("Di isi ketika waktu selesai sudah ditentukan !")
                             ])
+                            ->hidden(
+                                fn (Get $get): bool => ($get('paket') == 'personal' || $get('paket') == null) ? false : true
+                            )
                             ->columnSpan(2)
                     ]),
                 Fieldset::make('Penyewa')
                     ->schema([
+                        TextInput::make('nama_penyewa')
+                            ->maxLength(255)
+                            ->helperText("Di isi ketika bukan member")
+                            ->placeholder('Nama Penyewa')
+                            ->label('Nama Penyewa'),
                         Select::make('id_member')
                             ->relationship('member', 'nama')
                             ->preload()
                             ->searchable()
                             ->label('Member')
                             ->helperText("Boleh di kosongkan jika bukan member"),
-                        TextInput::make('nama_penyewa')
-                            ->maxLength(255)
-                            ->helperText("Di isi ketika bukan member")
-                            ->placeholder('Nama Penyewa')
-                            ->label('Nama Penyewa'),
                     ]),
                 Select::make('nomor_meja')
                     ->required()
@@ -105,9 +139,9 @@ class RunningTimeResource extends Resource
                     ->numeric()
                     ->placeholder('Harga Per Jam')
                     ->default(config('app.harga_per_jam')),
-                Textarea::make('deskripsi')
-                    ->placeholder('Deskripsi')
-                    ->label('Deskripsi'),
+                // Textarea::make('deskripsi')
+                //     ->placeholder('Deskripsi')
+                //     ->label('Deskripsi'),
             ]);
     }
 
@@ -189,10 +223,10 @@ class RunningTimeResource extends Resource
                     ->formatStateUsing(function ($record) {
                         return 'Rp.' . number_format($record->total(), 0, ',', '.');
                     }),
-                TextColumn::make('deskripsi')
-                    ->label('Keterangan')
-                    ->toggleable(isToggledHiddenByDefault: false)
-                    ->searchable(),
+                // TextColumn::make('deskripsi')
+                //     ->label('Keterangan')
+                //     ->toggleable(isToggledHiddenByDefault: false)
+                //     ->searchable(),
                 TextColumn::make('user.name')
                     ->label('Kasir')
                     ->toggleable()
