@@ -32,6 +32,9 @@ class TransaksiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calculator';
 
+    protected static ?string $navigationLabel = 'Transaksi Produk';
+    protected static ?string $pluralModelLabel = 'Transaksi Produk';
+
     public static function form(Form $form): Form
     {
         return $form
