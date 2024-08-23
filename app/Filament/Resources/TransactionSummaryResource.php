@@ -17,7 +17,7 @@ class TransactionSummaryResource extends Resource
 {
     protected static ?string $model = TransactionSummary::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
     protected static ?string $navigationLabel = 'Rekap Transaksi';
     protected static ?string $pluralModelLabel = 'Rekap Transaksi';
 
