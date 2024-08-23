@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\Member;
 use App\Models\Produk;
 use App\Models\RunningTime;
+use App\Models\TransactionSummary;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\ChartWidget;
@@ -40,17 +41,33 @@ class StatsOverview extends BaseWidget
             ->count();
 
         $nowTransaksi = 0;
+        $nowCount = 0;
         $transaksiNow = RunningTime::where('status_pembayaran', 1)->whereDate('created_at', now())->get();
+
         foreach ($transaksiNow as $tn) {
             $nowTransaksi += $tn->total();
+            $nowCount += 1;
         }
 
         $jumlahNilaiTransaksi = 0;
         $listRunningTime = RunningTime::where('status_pembayaran', 1)
             ->get();
+
         foreach ($listRunningTime as $runningTime) {
             $jumlahNilaiTransaksi += $runningTime->total();
         }
+
+        $find = TransactionSummary::wheredate('date', now())->first();
+        if(!$find){
+            $find = new TransactionSummary();
+            $find->date = now();
+        }else{
+            $find->total = $nowTransaksi;
+            $find->transaction = $nowCount;
+            $find->save();
+        }
+
+
         return [
             Stat::make('Jumlah Member', $jumlahMember)
                 ->description('Jumlah keseluruhan member')
