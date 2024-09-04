@@ -11,7 +11,7 @@ class Helpers
 {
     public static function appName()
     {
-        return 'Vella Billiard';
+        return 'Orion Billiard';
     }
 
     public static function dateFormat($date)
