@@ -34,18 +34,23 @@
                     <tr>
                       <th scope="row">#{{ $d['id'] }}</th>
                       <td>
-                          <span class="badge bg-success">Rp. {{ number_format($d->total()) }}</span>
-                        {{-- @if ($d['waktu_selesai'])
+                        @if ($d['waktu_selesai'])
+                            <span class="badge bg-success">Rp. {{ number_format($d->total()) }}</span>
                         @else
                             <span class="badge bg-danger">Meja tidak diselesaikan</span>
-                        @endif --}}
+                        @endif
                     </td>
                       <td>{{ $d['nama_penyewa'] }}</td>
                       <td>{{ $d['user']['name'] }}</td>
                       <td>{{ \Carbon\Carbon::parse($d['created_at'])->format("d-m-Y H:i") }}</td>
                       <td>{{ \Carbon\Carbon::parse($d['deleted_at'])->format("d-m-Y H:i") }}</td>
                       <td>{{ \Carbon\Carbon::parse($d['waktu_mulai'])->format("d-m-Y H:i") }}</td>
-                      <td>{{ \Carbon\Carbon::parse($d['waktu_selesai'])->format("d-m-Y H:i") }}</td>
+                      <td>
+                        @if ($d['waktu_selesai'])
+                            {{ \Carbon\Carbon::parse($d['waktu_selesai'])->format("d-m-Y H:i") }}</td>
+                        @else
+                            <span class="badge bg-danger">Meja tidak diselesaikan</span>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>
