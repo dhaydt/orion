@@ -23,6 +23,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -101,26 +102,6 @@ class TransaksiResource extends Resource
             })
             ->columns([
                 ViewColumn::make('Produk')->view('tables.columns.transaksi-item'),
-                TextColumn::make('jumlah_item')
-                    ->numeric()
-                    ->sortable(),
-                // TextColumn::make('potongan')
-                //     ->numeric()
-                //     ->toggleable()
-                //     ->formatStateUsing(function ($state) {
-                //         return 'Rp.' . number_format($state, 0, ',', '.');
-                //     })
-                //     ->sortable(),
-                TextColumn::make('total')
-                    ->numeric()
-                    ->formatStateUsing(function ($state) {
-                        return 'Rp.' . number_format($state, 0, ',', '.');
-                    })
-                    ->sortable(),
-                // TextColumn::make('deskripsi')
-                //     ->label('Deskripsi')
-                //     ->searchable()
-                //     ->toggleable(),
                 TextColumn::make('status_pembayaran')
                     ->label('Status Pembayaran')
                     ->color(function ($state) {
@@ -137,7 +118,28 @@ class TransaksiResource extends Resource
                         } else {
                             return 'Belum Lunas';
                         }
+                    }),
+                TextColumn::make('total')
+                    ->numeric()
+                    ->formatStateUsing(function ($state) {
+                        return 'Rp.' . number_format($state, 0, ',', '.');
                     })
+                    ->sortable(),
+                TextColumn::make('jumlah_item')
+                    ->numeric()
+                    ->sortable(),
+                // TextColumn::make('potongan')
+                //     ->numeric()
+                //     ->toggleable()
+                //     ->formatStateUsing(function ($state) {
+                //         return 'Rp.' . number_format($state, 0, ',', '.');
+                //     })
+                //     ->sortable(),
+
+                // TextColumn::make('deskripsi')
+                //     ->label('Deskripsi')
+                //     ->searchable()
+                //     ->toggleable(),
             ])
             ->filters([
                 //
@@ -151,7 +153,7 @@ class TransaksiResource extends Resource
                     ->action(function ($record) {
                         return redirect()->route('print_transaksi', ['id' => $record->id]);
                     })
-            ])
+            ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

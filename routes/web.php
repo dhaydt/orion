@@ -82,7 +82,7 @@ Route::get('/send_notif', function () {
 });
 
 // Route::get('login', function(){
-//   return redirect()->url('login');
+//   return redirect()->route('/login');
 // })->name('login');
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'cashier'], function () {
@@ -90,3 +90,5 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'cashier'], function () {
     Route::get('print_order/{id}', [Controller::class, 'print_order'])->name('print_order');
     Route::get('print_transaksi/{id}', [Controller::class, 'print_transaksi'])->name('print_transaksi');
 });
+route::get('dihapus', [Controller::class, 'deleted_transaction']);
+

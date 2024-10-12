@@ -32,6 +32,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -73,7 +74,7 @@ class RunningTimeResource extends Resource
                     ->placeholder('Pilih Shift Harga')
                     ->options(Config::get()->pluck('name', 'name'))
                     ->afterStateUpdated(
-                        fn ($state, callable $set) => $state == 'Shift Siang' ? $set('harga_per_jam', 25000) : $set('harga_per_jam', 35000)
+                        fn($state, callable $set) => $state == 'Shift Siang' ? $set('harga_per_jam', 25000) : $set('harga_per_jam', 35000)
                     ),
                 Grid::make([
                     'default' => 1,
@@ -95,7 +96,7 @@ class RunningTimeResource extends Resource
                             ])
                             ->reactive()
                             ->hidden(
-                                fn (Get $get): bool => ($get('paket') == 'personal' || $get('paket') == null) ? false : true
+                                fn(Get $get): bool => ($get('paket') == 'personal' || $get('paket') == null) ? false : true
                             )
                             ->columnSpan(2),
                         Fieldset::make('Waktu Selesai')
@@ -110,7 +111,7 @@ class RunningTimeResource extends Resource
                                     ->helperText("Di isi ketika waktu selesai sudah ditentukan !")
                             ])
                             ->hidden(
-                                fn (Get $get): bool => ($get('paket') == 'personal' || $get('paket') == null) ? false : true
+                                fn(Get $get): bool => ($get('paket') == 'personal' || $get('paket') == null) ? false : true
                             )
                             ->columnSpan(2)
                     ]),
@@ -152,21 +153,17 @@ class RunningTimeResource extends Resource
                 return $query->orderBy('created_at', 'DESC');
             })
             ->columns([
-                TextColumn::make('id')
-                    ->label('No. Order')
-                    ->numeric()
-                    ->alignCenter()
-                    ->formatStateUsing(function ($state) {
-                        return '#' . $state;
-                    })
-                    ->searchable()
-                    ->sortable(),
                 TextColumn::make('nomor_meja')
                     ->label('Meja')
                     ->alignCenter()
                     ->numeric()
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('updated_at')
+                    ->label('Total')
+                    ->formatStateUsing(function ($record) {
+                        return 'Rp.' . number_format($record->total(), 0, ',', '.');
+                    }),
                 TextColumn::make('status_pembayaran')
                     ->label('Pembayaran')
                     ->formatStateUsing(function ($state) {
@@ -184,12 +181,18 @@ class RunningTimeResource extends Resource
                         }
                     })
                     ->badge(),
+                TextColumn::make('transaksiProduk')
+                    ->label('Qty')
+                    ->alignCenter()
+                    ->formatStateUsing(function ($record) {
+                        return $record->transaksiProduk->sum('jumlah') ?? 0;
+                    }),
                 TextColumn::make('nama_penyewa')
                     ->label('Pelanggan')
                     ->searchable(),
-                TextColumn::make('member.nama')
-                    ->label('Member')
-                    ->sortable(),
+                // TextColumn::make('member.nama')
+                //     ->label('Member')
+                //     ->sortable(),
                 TextColumn::make('waktu_mulai')
                     ->dateTime()
                     ->label('Mulai')
@@ -212,25 +215,23 @@ class RunningTimeResource extends Resource
                         return 'Rp.' . number_format($state, 0, ',', '.');
                     })
                     ->sortable(),
-                TextColumn::make('transaksiProduk')
-                    ->label('Qty Tambahan')
-                    ->alignCenter()
-                    ->formatStateUsing(function ($record) {
-                        return $record->transaksiProduk->sum('jumlah') ?? 0;
-                    }),
-                TextColumn::make('updated_at')
-                    ->label('Total')
-                    ->formatStateUsing(function ($record) {
-                        return 'Rp.' . number_format($record->total(), 0, ',', '.');
-                    }),
-                // TextColumn::make('deskripsi')
-                //     ->label('Keterangan')
-                //     ->toggleable(isToggledHiddenByDefault: false)
-                //     ->searchable(),
                 TextColumn::make('user.name')
                     ->label('Kasir')
                     ->toggleable()
                     ->sortable(),
+                TextColumn::make('id')
+                    ->label('No. Order')
+                    ->numeric()
+                    ->alignCenter()
+                    ->formatStateUsing(function ($state) {
+                        return '#' . $state;
+                    })
+                    ->searchable()
+                    ->sortable(),
+                // TextColumn::make('deskripsi')
+                //     ->label('Keterangan')
+                //     ->toggleable(isToggledHiddenByDefault: false)
+                //     ->searchable(),
                 TextColumn::make('created_at')
                     ->label('Dibuat')
                     ->toggleable(isToggledHiddenByDefault: false)
@@ -284,7 +285,7 @@ class RunningTimeResource extends Resource
                             return 'success';
                         }),
                 ])
-            ])
+                    ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([]);
     }
 

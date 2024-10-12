@@ -14,6 +14,12 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
+    public function deleted_transaction(){
+        $data['data'] = RunningTime::orderBy('created_at', 'desc')->onlyTrashed()->get();
+
+        return view('deleted_transaction', $data);
+    }
+
     public function print($id)
     {
         $data = RunningTime::find($id);
