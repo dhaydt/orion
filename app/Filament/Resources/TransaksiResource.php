@@ -22,6 +22,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -95,27 +96,31 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->orderBy('created_at', 'DESC');
+            })
             ->columns([
+                ViewColumn::make('Produk')->view('tables.columns.transaksi-item'),
                 TextColumn::make('jumlah_item')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('potongan')
-                    ->numeric()
-                    ->toggleable()
-                    ->formatStateUsing(function ($state) {
-                        return 'Rp.' . number_format($state, 0, ',', '.');
-                    })
-                    ->sortable(),
+                // TextColumn::make('potongan')
+                //     ->numeric()
+                //     ->toggleable()
+                //     ->formatStateUsing(function ($state) {
+                //         return 'Rp.' . number_format($state, 0, ',', '.');
+                //     })
+                //     ->sortable(),
                 TextColumn::make('total')
                     ->numeric()
                     ->formatStateUsing(function ($state) {
                         return 'Rp.' . number_format($state, 0, ',', '.');
                     })
                     ->sortable(),
-                TextColumn::make('deskripsi')
-                    ->label('Deskripsi')
-                    ->searchable()
-                    ->toggleable(),
+                // TextColumn::make('deskripsi')
+                //     ->label('Deskripsi')
+                //     ->searchable()
+                //     ->toggleable(),
                 TextColumn::make('status_pembayaran')
                     ->label('Status Pembayaran')
                     ->color(function ($state) {
