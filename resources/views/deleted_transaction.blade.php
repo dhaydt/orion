@@ -20,6 +20,7 @@
                 <thead>
                   <tr class="text-capitalize">
                     <th scope="col">#id</th>
+                    <th scope="col">total transaksi</th>
                     <th scope="col">nama penyewa</th>
                     <th scope="col">nama admin</th>
                     <th scope="col">tanggal dibuat</th>
@@ -32,6 +33,13 @@
                     @foreach ($data as $d)
                     <tr>
                       <th scope="row">#{{ $d['id'] }}</th>
+                      <td>
+                        @if ($d['waktu_selesai'])
+                        <span class="badge bg-success">Rp. {{ number_format($d->total()) }}</span>
+                        @else
+                            <span class="badge bg-danger">Meja tidak diselesaikan</span>
+                        @endif
+                    </td>
                       <td>{{ $d['nama_penyewa'] }}</td>
                       <td>{{ $d['user']['name'] }}</td>
                       <td>{{ \Carbon\Carbon::parse($d['created_at'])->format("d-m-Y H:i") }}</td>
