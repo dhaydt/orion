@@ -34,11 +34,11 @@
                     <tr>
                       <th scope="row">#{{ $d['id'] }}</th>
                       <td>
-                        @if ($d['waktu_selesai'])
-                        <span class="badge bg-success">Rp. {{ number_format($d->total()) }}</span>
+                          <span class="badge bg-success">Rp. {{ number_format($d->total()) }}</span>
+                        {{-- @if ($d['waktu_selesai'])
                         @else
                             <span class="badge bg-danger">Meja tidak diselesaikan</span>
-                        @endif
+                        @endif --}}
                     </td>
                       <td>{{ $d['nama_penyewa'] }}</td>
                       <td>{{ $d['user']['name'] }}</td>
