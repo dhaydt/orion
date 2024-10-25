@@ -21,7 +21,10 @@ class Helpers
 
     public static function countSummary()
     {
-        $dates = RunningTime::get()->pluck('created_at')->toArray();
+        $now = Carbon::now()->addDay()->format('Y-m-d H:i');
+        $from = Carbon::now()->subDays(20)->format('Y-m-d H:i');
+
+        $dates = RunningTime::whereBetween('created_at', [$from, $now])->get()->pluck('created_at')->toArray();
 
         foreach ($dates as $key => $d) {
             $transactions = RunningTime::where('status_pembayaran', 1)->whereDate('created_at', $d)->get();
