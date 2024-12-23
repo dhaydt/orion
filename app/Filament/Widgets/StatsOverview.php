@@ -11,6 +11,7 @@ use Carbon\CarbonPeriod;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class StatsOverview extends BaseWidget
 {
@@ -67,29 +68,52 @@ class StatsOverview extends BaseWidget
             $find->save();
         }
 
+        $email = Auth::user()->email;
 
-        return [
-            Stat::make('Jumlah Member', $jumlahMember)
-                ->description('Jumlah keseluruhan member')
-                ->chart($arrayJumlahMember)
-                ->color('success'),
-            Stat::make('Jumlah Produk', $jumlahProduk)
-                ->description('Jumlah Order')
-                ->color('primary')
-                ->chart($arrayJumlahNilaiTransaksi),
-            Stat::make('Jumlah Transaksi', $jumlahRunningTime)
-                ->description('Jumlah Transaksi')
-                ->chart($arrayJumlahNilaiTransaksi)
-                ->color('success'),
-            Stat::make('Total Transaksi ' . date('d M Y') . ' ', 'Rp.' . number_format($nowTransaksi, 0, ',', '.'))
-                ->description('Penghasilan hari ini')
-                ->chart($arrayJumlahNilaiTransaksi)
-                ->color('primary'),
-            Stat::make('Total Nilai Transaksi', 'Rp.' . number_format($jumlahNilaiTransaksi, 0, ',', '.'))
-                ->description('Jumlah Transaksi')
-                ->chart($arrayJumlahNilaiTransaksi)
-                ->color('success'),
-        ];
+        if($email == 'admin@admin.com'){
+            return [
+                Stat::make('Jumlah Member', $jumlahMember)
+                    ->description('Jumlah keseluruhan member')
+                    ->chart($arrayJumlahMember)
+                    ->color('success'),
+                Stat::make('Jumlah Produk', $jumlahProduk)
+                    ->description('Jumlah Order')
+                    ->color('primary')
+                    ->chart($arrayJumlahNilaiTransaksi),
+                Stat::make('Jumlah Transaksi', $jumlahRunningTime)
+                    ->description('Jumlah Transaksi')
+                    ->chart($arrayJumlahNilaiTransaksi)
+                    ->color('success'),
+                Stat::make('Total Transaksi ' . date('d M Y') . ' ', 'Rp.' . number_format($nowTransaksi, 0, ',', '.'))
+                    ->description('Penghasilan hari ini')
+                    ->chart($arrayJumlahNilaiTransaksi)
+                    ->color('primary'),
+                Stat::make('Total Nilai Transaksi', 'Rp.' . number_format($jumlahNilaiTransaksi, 0, ',', '.'))
+                    ->description('Jumlah Transaksi')
+                    ->chart($arrayJumlahNilaiTransaksi)
+                    ->color('success'),
+            ];
+        }else{
+            return [
+                Stat::make('Jumlah Member', $jumlahMember)
+                    ->description('Jumlah keseluruhan member')
+                    ->chart($arrayJumlahMember)
+                    ->color('success'),
+                Stat::make('Jumlah Produk', $jumlahProduk)
+                    ->description('Jumlah Order')
+                    ->color('primary')
+                    ->chart($arrayJumlahNilaiTransaksi),
+                Stat::make('Jumlah Transaksi', $jumlahRunningTime)
+                    ->description('Jumlah Transaksi')
+                    ->chart($arrayJumlahNilaiTransaksi)
+                    ->color('success'),
+                Stat::make('Total Transaksi ' . date('d M Y') . ' ', 'Rp.' . number_format($nowTransaksi, 0, ',', '.'))
+                    ->description('Penghasilan hari ini')
+                    ->chart($arrayJumlahNilaiTransaksi)
+                    ->color('primary'),
+            ];
+        }
+
     }
 
     public function getColumnSpan(): int|string|array
