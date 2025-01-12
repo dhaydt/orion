@@ -16,7 +16,8 @@ class Transaksi extends Model
         'potongan',
         'jumlah_item',
         'deskripsi',
-        'status_pembayaran'
+        'status_pembayaran',
+        'meja',
     ];
 
     public function transaksiProduk()

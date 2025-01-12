@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TransaksiResource\Pages;
 use App\Filament\Resources\TransaksiResource\RelationManagers;
+use App\Models\Meja;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use Filament\Forms;
@@ -17,6 +18,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -43,6 +45,14 @@ class TransaksiResource extends Resource
             ->schema([
                 Fieldset::make()
                     ->schema([
+                        Select::make('meja')
+                            ->label('Meja')
+                            ->placeholder('Pilih Meja')
+                            ->searchable()
+                            ->options(function () {
+                                return Meja::get()->pluck('name', 'name');
+                            })
+                            ->columnSpan(2),
                         Repeater::make("transaksiProduk")
                             ->label('Transaksi Produk')
                             ->relationship()
@@ -102,7 +112,7 @@ class TransaksiResource extends Resource
             })
             ->columns([
                 ViewColumn::make('Produk')->view('tables.columns.transaksi-item'),
-                TextColumn::make('table.runningTime.nomor_meja')
+                TextColumn::make('meja')
                     ->label('Meja'),
                 TextColumn::make('created_at')
                     ->label('Waktu')
@@ -152,14 +162,16 @@ class TransaksiResource extends Resource
                 //
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
-                Action::make('cetak')
-                    ->label("Cetak Transaksi")
-                    ->icon('heroicon-o-clipboard-document-list')
-                    ->action(function ($record) {
-                        return redirect()->route('print_transaksi', ['id' => $record->id]);
-                    })
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                    Action::make('cetak')
+                        ->label("Cetak Transaksi")
+                        ->icon('heroicon-o-clipboard-document-list')
+                        ->action(function ($record) {
+                            return redirect()->route('print_transaksi', ['id' => $record->id]);
+                        })
+                ]),
             ], position: ActionsPosition::BeforeColumns)
             ->bulkActions([
                 BulkActionGroup::make([

@@ -16,7 +16,7 @@ class TransaksiProduk extends Model
         'harga',
         'jumlah',
         'sub_total',
-        'id_transaksi'
+        'id_transaksi',
     ];
 
     public function produk()
