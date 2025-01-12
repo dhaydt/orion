@@ -102,6 +102,13 @@ class TransaksiResource extends Resource
             })
             ->columns([
                 ViewColumn::make('Produk')->view('tables.columns.transaksi-item'),
+                TextColumn::make('table.runningTime.nomor_meja')
+                    ->label('Meja'),
+                TextColumn::make('created_at')
+                    ->label('Waktu')
+                    ->formatStateUsing(function ($state) {
+                        return $state->format('d M Y H:i');
+                    }),
                 TextColumn::make('status_pembayaran')
                     ->label('Status Pembayaran')
                     ->color(function ($state) {
