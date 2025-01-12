@@ -13,6 +13,7 @@ use Filament\Tables\Actions\ExportBulkAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class ProductTransactionSummaryResource extends Resource
 {
@@ -23,6 +24,15 @@ class ProductTransactionSummaryResource extends Resource
     protected static ?string $pluralModelLabel = 'Rekap Transaksi Produk';
 
     protected static ?int $navigationSort = 6;
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        if(Auth::user()->email == 'admin@admin.com'){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public static function form(Form $form): Form
     {
