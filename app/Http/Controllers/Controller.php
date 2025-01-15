@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\CPU\Helpers;
 use App\Models\RunningTime;
+use App\Models\Transaksi;
 use App\Models\TransaksiProduk;
 use charlieuki\ReceiptPrinter\ReceiptPrinter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -18,6 +19,12 @@ class Controller extends BaseController
         $data['data'] = RunningTime::orderBy('created_at', 'desc')->onlyTrashed()->get();
 
         return view('deleted_transaction', $data);
+    }
+
+    public function deleted_transaction_product(){
+        $data['data'] = Transaksi::with('transaksiProduk')->orderBy('created_at', 'desc')->onlyTrashed()->get();
+
+        return view('deleted_transaction_product', $data);
     }
 
     public function print($id)

@@ -91,4 +91,5 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'cashier'], function () {
     Route::get('print_transaksi/{id}', [Controller::class, 'print_transaksi'])->name('print_transaksi');
 });
 route::get('dihapus', [Controller::class, 'deleted_transaction']);
+route::get('dihapus_produk', [Controller::class, 'deleted_transaction_product']);
 
