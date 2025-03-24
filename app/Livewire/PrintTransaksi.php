@@ -27,6 +27,7 @@ class PrintTransaksi extends Component
             'status_pembayaran' => $this->transaksi->status_pembayaran,
             'produk' => $this->transaksi->transaksiProduk,
             'total' => 'Rp. ' . number_format($this->transaksi->total, 0, ',', '.'),
+            'meja' => $this->transaksi->meja ?? '-',
             'tanggal_transaksi' => Carbon::parse($this->transaksi->created_at)->locale('id')->isoFormat('dddd, DD MMMM YYYY H:m:s')
         ];
 

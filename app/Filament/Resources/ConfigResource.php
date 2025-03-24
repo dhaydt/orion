@@ -29,7 +29,6 @@ class ConfigResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->label('Shift')
-                    ->readOnly()
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('value')
