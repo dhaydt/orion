@@ -2,6 +2,7 @@
 
 namespace App\CPU;
 
+use App\Models\Config;
 use App\Models\ProductTransactionSummary;
 use App\Models\RunningTime;
 use App\Models\TransactionSummary;
@@ -92,6 +93,18 @@ class Helpers
             ->title('Rekap transaksi produk berhasil diperbaharui')
             ->success()
             ->send();
+    }
+
+    public static function getPrice($name){
+        $price = 0;
+
+        $config = Config::where('name', $name)->first();
+
+        if($config){
+            $price = $config->value;
+        }
+
+        return $price;
     }
 
     public static function dateFormat2($date, $type)

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\CPU\Helpers;
 use App\Filament\Resources\RunningTimeResource\Pages;
 use App\Filament\Resources\RunningTimeResource\Pages\ViewRunningTime;
 use App\Filament\Resources\RunningTimeResource\RelationManagers\TransaksiProdukRelationManager;
@@ -74,7 +75,7 @@ class RunningTimeResource extends Resource
                     ->placeholder('Pilih Shift Harga')
                     ->options(Config::get()->pluck('name', 'name'))
                     ->afterStateUpdated(
-                        fn($state, callable $set) => $state == 'Shift Siang' ? $set('harga_per_jam', 25000) : $set('harga_per_jam', 35000)
+                        fn($state, callable $set) => $set('harga_per_jam', Helpers::getPrice($state))
                     ),
                 Grid::make([
                     'default' => 1,
